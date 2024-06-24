@@ -1,0 +1,109 @@
+---
+import { Image } from "astro:assets";
+
+const navLinks = [
+    {
+        name: "About us",
+        href: "#about",
+    },
+    {
+        name: "Services",
+        href: "#services",
+    },
+    {
+        name: "Use cases",
+        href: "#cases",
+    },
+    {
+        name: "Testimonials",
+        href: "#testimonials",
+    },
+    {
+        name: "Contact",
+        href: "#contact",
+    },
+];
+
+import bars from "@/assets/bars.svg";
+import brand from "@/assets/brand.svg";
+---
+
+<div class="bg-[#fff] fixed w-full top-0 z-10 py-[30px] h-auto flex justify-center">
+    <nav aria-label="Main navegation" role="navigation" class="flex justify-between items-center w-full" style="max-width: 1280px" >
+
+        <div class="pl-4 xl:flex-none">
+            <a href="#home">
+                <Image src={brand} alt="Brand logo" loading="eager" />
+            </a>
+        </div>
+
+        <div id="navMenu" class="bg-[#fff] w-full absolute top-full z-10 xl:static xl:flex xl:flex-grow xl:items-center xl:justify-center overflow-hidden transition-height duration-500 h-0 xl:h-auto">
+        <!-- Nav Links -->
+        <ul class="xl:flex xl:flex-grow xl:justify-center xl:gap-10">
+            {
+                navLinks.map((link) => {
+                    return (
+                        <li class="mx-4 p-4 xl:mx-0 px-0">
+                            <a id={link.name} href={link.href} class="block">
+                                {link.name}
+                            </a>
+                        </li>
+                    );
+                })
+            }
+        </ul>
+        
+        <!-- Login -->
+        <div class="flex xl:flex-row xl:items-center px-4 xl:gap-4 flex-col">
+            <button class="btn-secondary">Request a quote</button>
+        </div>
+        </div>
+
+
+        <button aria-label="menu" role="button" aria-controls="navmenu" aria-expanded="false" id="menuButton" class="w-12 h-12 xl:hidden pr-4 cursor-pointer">
+            <Image src={bars} alt="hamburgerIcon" class="hamburgerIcon" />
+        </button>
+    </nav>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", (_) => {
+        const menuButton = document.getElementById("menuButton");
+        const navMenu = document.getElementById("navMenu");
+
+        let isMenuOpen = false;
+
+        if (menuButton && navMenu ) {
+            menuButton.addEventListener('click', () => {
+                /* HANDLE THE HEIGHT TRANSITION */
+                isMenuOpen = !isMenuOpen;
+
+                menuButton.setAttribute("aria-expanded", `${isMenuOpen}`);
+
+                if(isMenuOpen) {
+                    navMenu.style.height = `${navMenu.scrollHeight}px`
+                } else {
+                    navMenu.style.height = "0px"
+                }
+            })
+
+            navMenu.addEventListener('click', () => {
+                isMenuOpen = false;
+                navMenu.style.height = "0px"
+                navMenu.classList.remove("h-auto")
+            })
+
+            window.addEventListener('resize', () => {
+                /* RESIZE CLEANUP SCREEN STATE */
+                if(window.innerWidth >= 1280 ) {
+                    /* Add height if menu was closed and then resize happened */
+                    navMenu.style.height = "auto"
+                    navMenu.classList.remove("h-0")
+                } else {
+                    /* Prevent opened menu when going from bit to small */
+                    navMenu.style.height = "0px";
+                }
+            })
+        }
+    })
+</script>
